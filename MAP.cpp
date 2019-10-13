@@ -4,10 +4,164 @@
 
 #include "MAP.h"
 #include "iostream"
+#include "fstream"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
 using namespace std;
+
+
+uc **get_new_map (uc **map) {
+    uc **new_map = new uc*[cells_in_row];
+    int count = 0;
+
+    for (int i = 0; i < cells_in_row; i++) {
+        new_map[i] = new uc [cells_in_column];
+    }
+
+    for (int i = 0; i < cells_in_row; i++) {
+        for (int j = 0; j < cells_in_column; j++) {
+            new_map[i][j] = 0;
+        }
+    }
+
+    for (int i = 0; i < cells_in_row; i++) {
+        for (int j = 0; j < cells_in_column; j++) {
+
+            count = 0;
+
+            if (i == 0) {
+                count = check_neighbours_up(map, j, i);
+            } else if (j == 0 && i != (cells_in_row - 1) ) {
+                count = check_neighbours_left(map, j, i);
+            } else if (i == cells_in_row - 1) {
+                count = check_neighbours_down(map, j, i);
+            } else if (j == cells_in_column - 1) {
+                count = check_neighbours_right(map, j, i);
+            } else {
+                // map[-1][-1]
+                if (map[i - 1][j - 1]) {
+                    count++;
+                }
+                // map[-1][0]
+                if (map[i - 1][j]) {
+                    count++;
+                }
+                // map[-1][+1]
+                if (map[i - 1][j + 1]) {
+                    count++;
+                }
+                // map[0][-1]
+                if (map[i][j - 1]) {
+                    count++;
+                }
+                // map[0][+1]
+                if (map[i][j + 1]) {
+                    count++;
+                }
+                // map[+1][-1]
+                if (map[i + 1][j - 1]) {
+                    count++;
+                }
+                // map[+1][0]
+                if (map[i + 1][j]) {
+                    count++;
+                }
+                // map[+1][+1]
+                if (map[i + 1][j + 1]) {
+                    count++;
+                }
+            }
+
+            if (count == 3) {
+                if (map[i][j] > 0) {
+                    if (map[i][j] < 250) {
+                        new_map[i][j] = map[i][j] +1;
+                    } else {
+                        new_map[i][j] = 250;
+                    }
+                } else {
+                    new_map[i][j] = 1;
+                }
+            }
+            if (map[i][j] > 0 && count == 2) {
+                if (map[i][j] > 0) {
+                    if (map[i][j] < 250) {
+                        new_map[i][j] = map[i][j] + 1;
+                    } else {
+                        new_map[i][j] = 250;
+                    }
+                } else {
+                    new_map[i][j] = 1;
+                }
+            }
+
+
+        }
+    }
+    for (int i = 0; i < cells_in_row; i++) {
+        delete[] map[i];
+    }
+
+    return new_map;
+}
+
+void save_game (uc **map) {
+
+    ofstream fout;
+
+    fout.open("life.bin", ios_base::trunc | ios_base::binary);
+
+    if (fout.is_open()) {
+
+        for (int i = 0 ; i < cells_in_row ; i++) {
+            for (int j = 0 ; j < cells_in_column ; j++) {
+                fout.write((char *) &map[i][j] , sizeof(unsigned char));
+            }
+        }
+
+        fout.close();
+    }
+}
+
+void load_game (uc **map) {
+    ifstream fin("life.bin" , std::ios::binary);
+
+    map[0][0] = 123;
+
+    cout << endl;
+    for (int i = 0 ; i < cells_in_row ; i++) {
+
+        for (int j = 0 ; j < cells_in_column ; j++) {
+            if(fin.read((char *)&map[i][j] , sizeof(unsigned char))){
+
+            };
+        }
+
+    }
+
+    fin.close();
+
+}
+
+void create_map (uc **map) {
+
+    for (int i = 0; i < cells_in_row; i++) {
+        map[i] = new uc[cells_in_column];
+    }
+
+    for (int i = 0; i < cells_in_row; i++) {
+        for (int j = 0; j < cells_in_column; j++) {
+            map[i][j] = 0;
+        }
+    }
+}
+
+void delete_map(uc **map) {
+    for(int i = 0 ; i < cells_in_row ; i++) {
+        delete[] map[i];
+    }
+}
 
 void put_cell (SDL_Renderer *renderer , uc **map , int i , int  j , int x , int y , bool selected) {
     SDL_Rect r;
@@ -44,297 +198,297 @@ void put_cell (SDL_Renderer *renderer , uc **map , int i , int  j , int x , int 
 }
 
 int check_neighbours_up(uc **map , int j ,int i) {
-    int count = 0;
+    int counter = 0;
 
     if (j == 0) {
         // map[-1][-1]
         if (map[cells_in_row - 1][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[-1][0]
         if (map[cells_in_row - 1][0]) {
-            count++;
+            counter++;
         }
         // map[-1][1]
         if (map[cells_in_row - 1][1]) {
-            count++;
+            counter++;
         }
         // map[0][-1]
         if (map[0][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[0][+1]
         if (map[0][1]) {
-            count++;
+            counter++;
         }
         // map[+1][-1]
         if (map[1][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[+1][0]
         if (map[1][0]) {
-            count++;
+            counter++;
         }
         // map[+1][+1]
         if (map[1][1]) {
-            count++;
+            counter++;
         }
     } else if (j == (cells_in_column - 1)) {
         // map[-1][-1]
         if (map[cells_in_row - 1][cells_in_column - 2]) {
-            count++;
+            counter++;
         }
         // map[-1][0]
         if (map[cells_in_row - 1][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[-1][1]
         if (map[cells_in_row - 1][0]) {
-            count++;
+            counter++;
         }
         // map[0][-1]
         if (map[0][cells_in_column - 2]) {
-            count++;
+            counter++;
         }
         // map[0][+1]
         if (map[0][0]) {
-            count++;
+            counter++;
         }
         // map[+1][-1]
         if (map[1][cells_in_column - 2]) {
-            count++;
+            counter++;
         }
         // map[+1][0]
         if ( map[1][cells_in_column - 1] ) {
-            count++;
+            counter++;
         }
         // map[+1][+1]
         if (map[1][0]) {
-            count++;
+            counter++;
         }
     } else {
         // map[-1][-1]
         if (map[cells_in_row - 1][j - 1]) {
-            count++;
+            counter++;
         }
         // map[-1][0]
         if (map[cells_in_row - 1][j]) {
-            count++;
+            counter++;
         }
         // map[-1][+1]
         if (map[cells_in_row - 1] [j + 1]) {
-            count++;
+            counter++;
         }
         // map[0][-1]
         if (map[i][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[0][+1]
         if (map[i][j + 1]) {
-            count++;
+            counter++;
         }
         // map[+1][-1]
         if (map[i + 1][j - 1]) {
-            count++;
+            counter++;
         }
         // map[+1][0]
         if (map[i + 1][j]) {
-            count++;
+            counter++;
         }
         // map[+1][+1]
         if (map[i + 1][j + 1]) {
-            count++;
+            counter++;
         }
     }
 
-    return count;
+    return counter;
 }
 int check_neighbours_left(uc **map , int j , int i) {
-    int count = 0;
+    int counter = 0;
 
     // map[-1][-1]
     if (map[i - 1][cells_in_column - 1]) {
-        count++;
+        counter++;
     }
     // map[-1][0]
     if (map[i - 1][j]) {
-        count++;
+        counter++;
     }
     // map[-1][+1]
     if (map[i - 1][j + 1]) {
-        count++;
+        counter++;
     }
     // map[0][-1]
     if (map[i][cells_in_column - 1]) {
-        count++;
+        counter++;
     }
     // map[0][+1]
     if (map[i][j + 1]) {
-        count++;
+        counter++;
     }
     // map[+1][-1]
     if (map[i + 1][cells_in_column - 1]) {
-        count++;
+        counter++;
     }
     // map[+1][0]
     if (map[i + 1][j]) {
-        count++;
+        counter++;
     }
     // map[+1][+1]
     if (map[i + 1][j + 1]) {
-        count++;
+        counter++;
     }
 
-    return count;
+    return counter;
 }
 int check_neighbours_down(uc **map , int j , int i) {
-    int count = 0;
+    int counter = 0;
 
     if ( j == 0 ) {
         // map[-1][-1]
         if (map[cells_in_row - 2][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[-1][0]
         if (map[i - 1][j]) {
-            count++;
+            counter++;
         }
         // map[-1][+1]
         if (map[i - 1] [j + 1]) {
-            count++;
+            counter++;
         }
         // map[0][-1]
         if (map[cells_in_row - 1][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[0][+1]
         if (map[i][j + 1]) {
-            count++;
+            counter++;
         }
         // map[+1][-1]
         if (map[0][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[+1][0]
         if (map[0][0]) {
-            count++;
+            counter++;
         }
         // map[+1][+1]
         if (map[0][1]) {
-            count++;
+            counter++;
         }
     } else if ( j == (cells_in_column - 1) ) {
         // map[-1][-1]
         if (map[cells_in_row - 2][cells_in_column - 2]) {
-            count++;
+            counter++;
         }
         // map[-1][0]
         if (map[i - 1][j]) {
-            count++;
+            counter++;
         }
         // map[-1][+1]
         if (map[cells_in_row - 2][0]) {
-            count++;
+            counter++;
         }
         // map[0][-1]
         if (map[cells_in_row - 1][cells_in_column - 2]) {
-            count++;
+            counter++;
         }
         // map[0][+1]
         if (map[cells_in_row - 1][0]) {
-            count++;
+            counter++;
         }
         // map[+1][-1]
         if (map[0][cells_in_column - 2]) {
-            count++;
+            counter++;
         }
         // map[+1][0]
         if (map[cells_in_row - 1][cells_in_column - 1]) {
-            count++;
+            counter++;
         }
         // map[+1][+1]
         if (map[0][0]) {
-            count++;
+            counter++;
         }
     } else {
         // map[-1][-1]
         if (map[i - 1][j - 1]) {
-            count++;
+            counter++;
         }
         // map[-1][0]
         if (map[i - 1][j]) {
-            count++;
+            counter++;
         }
         // map[-1][+1]
         if (map[i - 1][j + 1]) {
-            count++;
+            counter++;
         }
         // map[0][-1]
         if (map[i][j - 1]) {
-            count++;
+            counter++;
         }
         // map[0][+1]
         if (map[i][j + 1]) {
-            count++;
+            counter++;
         }
         // map[+1][-1]
         if (map[0][j - 1]) {
-            count++;
+            counter++;
         }
         // map[+1][0]
         if (map[0][j]) {
-            count++;
+            counter++;
         }
         // map[+1][+1]
         if (map[0][j + 1]) {
-            count++;
+            counter++;
         }
     }
 
-    return count;
+    return counter;
 }
 int check_neighbours_right(uc **map , int j , int i) {
-    int count = 0;
+    int counter = 0;
 
     // map[-1][-1]
     if (map[i - 1][j - 1]) {
-        count++;
+        counter++;
     }
     // map[-1][0]
     if (map[i - 1][j]) {
-        count++;
+        counter++;
     }
     // map[-1][+1]
     if (map[i - 1][0]) {
-        count++;
+        counter++;
     }
     // map[0][-1]
     if (map[i][j - 1]) {
-        count++;
+        counter++;
     }
     // map[0][+1]
     if (map[i][0]) {
-        count++;
+        counter++;
     }
     // map[+1][-1]
     if (map[i + 1][j - 1]) {
-        count++;
+        counter++;
     }
     // map[+1][0]
     if (map[i + 1][j]) {
-        count++;
+        counter++;
     }
     // map[+1][+1]
     if (map[i + 1][0]) {
-        count++;
+        counter++;
     }
 
-    return count;
+    return counter;
 }
 
 void draw_map(SDL_Renderer *renderer , uc **map , int cursor_column , int cursor_row) {
-    SDL_Init(SDL_INIT_EVERYTHING);
-    TTF_Init();
+//    SDL_Init(SDL_INIT_EVERYTHING);
+//    TTF_Init();
 
     int R_back = 11;
     int G_back = 16;
@@ -352,5 +506,4 @@ void draw_map(SDL_Renderer *renderer , uc **map , int cursor_column , int cursor
     }
 
     SDL_RenderPresent(renderer);
-
 }
