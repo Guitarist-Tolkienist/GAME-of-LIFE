@@ -5,7 +5,6 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(GoL main.cpp MAP.cpp)
 
-
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake")
 
 find_package(SDL2 REQUIRED)

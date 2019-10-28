@@ -5,11 +5,11 @@
 using namespace std;
 
 int main() {
-
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         cout << "SDL_Init Error: " << SDL_GetError() << endl;
         return 0;
     }
+
     SDL_Window *screen = SDL_CreateWindow("Game of life", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                           width_of_map, height_of_map, SDL_WINDOW_ALLOW_HIGHDPI);
 
@@ -25,31 +25,30 @@ int main() {
 
     draw_map(renderer, map, cursor_column, cursor_row);
 
-
     while (SDL_WaitEvent(&event)) {
 
         switch (event.type) {
             case SDL_KEYDOWN:
                 switch (event.key.keysym.sym) {
-                    case SDLK_RIGHT :
+                    case SDLK_RIGHT:
                         cursor_column++;
                         if (cursor_column > cells_in_column - 1) {
                             cursor_column = 0;
                         }
                         break;
-                    case SDLK_LEFT :
+                    case SDLK_LEFT:
                         cursor_column--;
                         if (cursor_column < 0) {
                             cursor_column = cells_in_column - 1;
                         }
                         break;
-                    case SDLK_DOWN :
+                    case SDLK_DOWN:
                         cursor_row++;
                         if (cursor_row > cells_in_row - 1) {
                             cursor_row = 0;
                         }
                         break;
-                    case SDLK_UP :
+                    case SDLK_UP:
                         cursor_row--;
                         if (cursor_row < 0) {
                             cursor_row = cells_in_row - 1;
@@ -59,13 +58,9 @@ int main() {
                         delete_map(map);
                         return 0;
                     case SDLK_SPACE:
-                        if (map[cursor_row][cursor_column] == not_life) {
-                            map[cursor_row][cursor_column] = life;
-                        } else {
-                            map[cursor_row][cursor_column] = not_life;
-                        }
+                        map[cursor_row][cursor_column] == not_life ? map[cursor_row][cursor_column] = life : map[cursor_row][cursor_column] = not_life;
                         break;
-                    case SDLK_RETURN :
+                    case SDLK_RETURN:
                         map = get_new_map(map);
                         break;
                     case SDLK_l:
@@ -74,7 +69,7 @@ int main() {
                     case SDLK_s:
                         save_game(map);
                         break;
-                    default :
+                    default:
                         break;
                 }
                 break;
