@@ -224,7 +224,7 @@ int check_neighbours_up(uc **map, int j, int i) {
             counter++;
         }
         // map[0][-1]
-        if (map[i][cells_in_column - 1]) {
+        if (map[i][j - 1]) {
             counter++;
         }
         // map[0][+1]
@@ -485,8 +485,6 @@ int get_counter(uc **map, int i, int j) {
     return count;
 }
 void draw_map(SDL_Renderer *renderer, uc **map, int cursor_column, int cursor_row) {
-//    SDL_Init(SDL_INIT_EVERYTHING);
-//    TTF_Init();
 
     int R_back = 11;
     int G_back = 16;
