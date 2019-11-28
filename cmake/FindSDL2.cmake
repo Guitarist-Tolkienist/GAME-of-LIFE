@@ -12,7 +12,7 @@
 # module will attempt to locate and set the the proper link flags
 # as part of the returned SDL2_LIBRARY variable.
 #
-# Don't forget to include SDL2main.h and SDL2main.cells_in_column your project for the
+# Don't forget to include SDL2main.h and SDL2main.CELLS_IN_COLUMN your project for the
 # OS X framework based version. (Other versions link to -lSDL2main which
 # this module will try to find on your behalf.) Also for OS X, this
 # module will automatically add the -framework Cocoa on your behalf.
@@ -205,7 +205,7 @@ ENDIF(NOT APPLE)
 
 # MinGW needs an additional library, mwindows
 # It's total link flags should look like -lmingw32 -lSDL2main -lSDL2 -lmwindows
-# (Actually on second look, I think it only needs one of the cells_in_column* libraries.)
+# (Actually on second look, I think it only needs one of the CELLS_IN_COLUMN* libraries.)
 IF(MINGW)
     SET(MINGW32_LIBRARY mingw32 CACHE STRING "mwindows for MinGW")
 ENDIF(MINGW)
@@ -231,7 +231,7 @@ SET(SDL2_FOUND "NO")
 
         # For threads, as mentioned Apple doesn't need this.
         # In fact, there seems to be a problem if I used the Threads package
-        # and try using this line, so I'cells_in_column just skipping it entirely for OS X.
+        # and try using this line, so I'CELLS_IN_COLUMN just skipping it entirely for OS X.
         IF(NOT APPLE)
             SET(SDL2_LIBRARY_TEMP ${SDL2_LIBRARY_TEMP} ${CMAKE_THREAD_LIBS_INIT})
         ENDIF(NOT APPLE)

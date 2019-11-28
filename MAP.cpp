@@ -11,13 +11,13 @@
 using namespace std;
 
 uc **get_new_map (uc **map) {
-    uc **new_map = new uc*[cells_in_row];
+    uc **new_map = new uc*[CELLS_IN_ROW];
     int count = 0;
 
     create_map(new_map);
 
-    for (int i = 0; i < cells_in_row; i++) {
-        for (int j = 0; j < cells_in_column; j++) {
+    for (int i = 0; i < CELLS_IN_ROW; i++) {
+        for (int j = 0; j < CELLS_IN_COLUMN; j++) {
 
             count = get_counter(map, i , j);
 
@@ -29,7 +29,7 @@ uc **get_new_map (uc **map) {
                         new_map[i][j] = 250;
                     }
                 } else {
-                    new_map[i][j] = life;
+                    new_map[i][j] = LIFE;
                 }
             }
             if (map[i][j] > 0 && count == 2) {
@@ -40,7 +40,7 @@ uc **get_new_map (uc **map) {
                         new_map[i][j] = 250;
                     }
                 } else {
-                    new_map[i][j] = life;
+                    new_map[i][j] = LIFE;
                 }
             }
 
@@ -56,12 +56,12 @@ void save_game (uc **map) {
 
     ofstream fout;
 
-    fout.open("life.bin", ios_base::trunc | ios_base::binary);
+    fout.open("LIFE.bin", ios_base::trunc | ios_base::binary);
 
     if (fout.is_open()) {
 
-        for (int i = 0 ; i < cells_in_row ; i++) {
-            for (int j = 0 ; j < cells_in_column ; j++) {
+        for (int i = 0 ; i < CELLS_IN_ROW ; i++) {
+            for (int j = 0 ; j < CELLS_IN_COLUMN ; j++) {
                 fout.write((char *) &map[i][j] , sizeof(unsigned char));
             }
         }
@@ -71,14 +71,12 @@ void save_game (uc **map) {
 }
 
 void load_game (uc **map) {
-    ifstream fin("life.bin" , std::ios::binary);
+    ifstream fin("LIFE.bin" , std::ios::binary);
 
-    for (int i = 0 ; i < cells_in_row ; i++) {
+    for (int i = 0 ; i < CELLS_IN_ROW ; i++) {
 
-        for (int j = 0 ; j < cells_in_column ; j++) {
-            if(fin.read((char *)&map[i][j] , sizeof(unsigned char))){
-
-            };
+        for (int j = 0 ; j < CELLS_IN_COLUMN ; j++) {
+            fin.read((char *)&map[i][j] , sizeof(unsigned char));
         }
 
     }
@@ -89,19 +87,19 @@ void load_game (uc **map) {
 
 void create_map (uc **map) {
 
-    for (int i = 0; i < cells_in_row; i++) {
-        map[i] = new uc[cells_in_column];
+    for (int i = 0; i < CELLS_IN_ROW; i++) {
+        map[i] = new uc[CELLS_IN_COLUMN];
     }
 
-    for (int i = 0; i < cells_in_row; i++) {
-        for (int j = 0; j < cells_in_column; j++) {
-            map[i][j] = not_life;
+    for (int i = 0; i < CELLS_IN_ROW; i++) {
+        for (int j = 0; j < CELLS_IN_COLUMN; j++) {
+            map[i][j] = NOT_LIFE;
         }
     }
 }
 
 void delete_map(uc **map) {
-    for(int i = 0 ; i < cells_in_row ; i++) {
+    for(int i = 0 ; i < CELLS_IN_ROW ; i++) {
         delete[] map[i];
     }
 
@@ -115,13 +113,13 @@ void put_cell (SDL_Renderer *renderer, uc **map, int i, int  j, int x, int y, bo
 
     cell.x = x;
     cell.y = y;
-    cell.w = cell_size;
-    cell.h = cell_size;
+    cell.w = CELL_SIZE;
+    cell.h = CELL_SIZE;
 
     frame.x = x - 1;
     frame.y = y - 1;
-    frame.w = frame_size;
-    frame.h = frame_size;
+    frame.w = FRAME_SIZE;
+    frame.h = FRAME_SIZE;
 
     if (selected) {
         SDL_SetRenderDrawColor(renderer , 250 , 0 , 0, 255);
@@ -146,19 +144,19 @@ int check_neighbours_up(uc **map, int j, int i) {
 
     if (j == 0) {
         // map[-1][-1]
-        if (map[cells_in_row - 1][cells_in_column - 1]) {
+        if (map[CELLS_IN_ROW - 1][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[-1][0]
-        if (map[cells_in_row - 1][0]) {
+        if (map[CELLS_IN_ROW - 1][0]) {
             counter++;
         }
         // map[-1][1]
-        if (map[cells_in_row - 1][1]) {
+        if (map[CELLS_IN_ROW - 1][1]) {
             counter++;
         }
         // map[0][-1]
-        if (map[0][cells_in_column - 1]) {
+        if (map[0][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[0][+1]
@@ -166,7 +164,7 @@ int check_neighbours_up(uc **map, int j, int i) {
             counter++;
         }
         // map[+1][-1]
-        if (map[1][cells_in_column - 1]) {
+        if (map[1][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[+1][0]
@@ -177,21 +175,21 @@ int check_neighbours_up(uc **map, int j, int i) {
         if (map[1][1]) {
             counter++;
         }
-    } else if (j == (cells_in_column - 1)) {
+    } else if (j == (CELLS_IN_COLUMN - 1)) {
         // map[-1][-1]
-        if (map[cells_in_row - 1][cells_in_column - 2]) {
+        if (map[CELLS_IN_ROW - 1][CELLS_IN_COLUMN - 2]) {
             counter++;
         }
         // map[-1][0]
-        if (map[cells_in_row - 1][cells_in_column - 1]) {
+        if (map[CELLS_IN_ROW - 1][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[-1][1]
-        if (map[cells_in_row - 1][0]) {
+        if (map[CELLS_IN_ROW - 1][0]) {
             counter++;
         }
         // map[0][-1]
-        if (map[0][cells_in_column - 2]) {
+        if (map[0][CELLS_IN_COLUMN - 2]) {
             counter++;
         }
         // map[0][+1]
@@ -199,11 +197,11 @@ int check_neighbours_up(uc **map, int j, int i) {
             counter++;
         }
         // map[+1][-1]
-        if (map[1][cells_in_column - 2]) {
+        if (map[1][CELLS_IN_COLUMN - 2]) {
             counter++;
         }
         // map[+1][0]
-        if ( map[1][cells_in_column - 1] ) {
+        if ( map[1][CELLS_IN_COLUMN - 1] ) {
             counter++;
         }
         // map[+1][+1]
@@ -212,15 +210,15 @@ int check_neighbours_up(uc **map, int j, int i) {
         }
     } else {
         // map[-1][-1]
-        if (map[cells_in_row - 1][j - 1]) {
+        if (map[CELLS_IN_ROW - 1][j - 1]) {
             counter++;
         }
         // map[-1][0]
-        if (map[cells_in_row - 1][j]) {
+        if (map[CELLS_IN_ROW - 1][j]) {
             counter++;
         }
         // map[-1][+1]
-        if (map[cells_in_row - 1] [j + 1]) {
+        if (map[CELLS_IN_ROW - 1] [j + 1]) {
             counter++;
         }
         // map[0][-1]
@@ -251,7 +249,7 @@ int check_neighbours_left(uc **map, int j, int i) {
     int counter = 0;
 
     // map[-1][-1]
-    if (map[i - 1][cells_in_column - 1]) {
+    if (map[i - 1][CELLS_IN_COLUMN - 1]) {
         counter++;
     }
     // map[-1][0]
@@ -263,7 +261,7 @@ int check_neighbours_left(uc **map, int j, int i) {
         counter++;
     }
     // map[0][-1]
-    if (map[i][cells_in_column - 1]) {
+    if (map[i][CELLS_IN_COLUMN - 1]) {
         counter++;
     }
     // map[0][+1]
@@ -271,7 +269,7 @@ int check_neighbours_left(uc **map, int j, int i) {
         counter++;
     }
     // map[+1][-1]
-    if (map[i + 1][cells_in_column - 1]) {
+    if (map[i + 1][CELLS_IN_COLUMN - 1]) {
         counter++;
     }
     // map[+1][0]
@@ -290,7 +288,7 @@ int check_neighbours_down(uc **map, int j, int i) {
 
     if ( j == 0 ) {
         // map[-1][-1]
-        if (map[cells_in_row - 2][cells_in_column - 1]) {
+        if (map[CELLS_IN_ROW - 2][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[-1][0]
@@ -302,7 +300,7 @@ int check_neighbours_down(uc **map, int j, int i) {
             counter++;
         }
         // map[0][-1]
-        if (map[cells_in_row - 1][cells_in_column - 1]) {
+        if (map[CELLS_IN_ROW - 1][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[0][+1]
@@ -310,7 +308,7 @@ int check_neighbours_down(uc **map, int j, int i) {
             counter++;
         }
         // map[+1][-1]
-        if (map[0][cells_in_column - 1]) {
+        if (map[0][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[+1][0]
@@ -321,9 +319,9 @@ int check_neighbours_down(uc **map, int j, int i) {
         if (map[0][1]) {
             counter++;
         }
-    } else if ( j == (cells_in_column - 1) ) {
+    } else if ( j == (CELLS_IN_COLUMN - 1) ) {
         // map[-1][-1]
-        if (map[cells_in_row - 2][cells_in_column - 2]) {
+        if (map[CELLS_IN_ROW - 2][CELLS_IN_COLUMN - 2]) {
             counter++;
         }
         // map[-1][0]
@@ -331,23 +329,23 @@ int check_neighbours_down(uc **map, int j, int i) {
             counter++;
         }
         // map[-1][+1]
-        if (map[cells_in_row - 2][0]) {
+        if (map[CELLS_IN_ROW - 2][0]) {
             counter++;
         }
         // map[0][-1]
-        if (map[cells_in_row - 1][cells_in_column - 2]) {
+        if (map[CELLS_IN_ROW - 1][CELLS_IN_COLUMN - 2]) {
             counter++;
         }
         // map[0][+1]
-        if (map[cells_in_row - 1][0]) {
+        if (map[CELLS_IN_ROW - 1][0]) {
             counter++;
         }
         // map[+1][-1]
-        if (map[0][cells_in_column - 2]) {
+        if (map[0][CELLS_IN_COLUMN - 2]) {
             counter++;
         }
         // map[+1][0]
-        if (map[cells_in_row - 1][cells_in_column - 1]) {
+        if (map[CELLS_IN_ROW - 1][CELLS_IN_COLUMN - 1]) {
             counter++;
         }
         // map[+1][+1]
@@ -472,11 +470,11 @@ int get_counter(uc **map, int i, int j) {
 
     if (i == 0) {
         count = check_neighbours_up(map, j, i);
-    } else if (j == 0 && i != (cells_in_row - 1) ) {
+    } else if (j == 0 && i != (CELLS_IN_ROW - 1) ) {
         count = check_neighbours_left(map, j, i);
-    } else if (i == cells_in_row - 1) {
+    } else if (i == CELLS_IN_ROW - 1) {
         count = check_neighbours_down(map, j, i);
-    } else if (j == cells_in_column - 1) {
+    } else if (j == CELLS_IN_COLUMN - 1) {
         count = check_neighbours_right(map, j, i);
     } else {
         count = check_neighbours_inside(map, j, i);
@@ -494,8 +492,8 @@ void draw_map(SDL_Renderer *renderer, uc **map, int cursor_column, int cursor_ro
 
     SDL_RenderClear(renderer);
 
-    for (int y = 225 , i = 0; i < cells_in_row ; i++ , y += 27) {
-        for (int x = 125 , j = 0 ; j < cells_in_column ; j++ , x += 27) {
+    for (int y = 0 , i = 0; i < CELLS_IN_ROW ; i++ , y += FRAME_SIZE) {
+        for (int x = 0 , j = 0 ; j < CELLS_IN_COLUMN ; j++ , x += FRAME_SIZE) {
 
             put_cell(renderer, map, i, j, x, y, i == cursor_row && j == cursor_column);
         }

@@ -9,17 +9,17 @@
 
 #include <SDL2/SDL.h>
 
-const int height_of_map = 1000;
-const int width_of_map = 1000;
+const int HEIGHT_OF_MAP = 1000;
+const int WIDTH_OF_MAP = 1000;
 
-const int cells_in_row = 25;
-const int cells_in_column = 25;
+const int CELLS_IN_ROW = 40;
+const int CELLS_IN_COLUMN = 40;
 
-const int frame_size = 26;
-const int cell_size = 24;
+const int FRAME_SIZE = 25;
+const int CELL_SIZE = 23;
 
-const int life = 1;
-const int not_life = 0;
+const int LIFE = 1;
+const int NOT_LIFE = 0;
 
 typedef unsigned char uc;
 
